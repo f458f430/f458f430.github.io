@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天氣卡片API</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .all{
+            width: 100%;
+            height: 100vh;
+            background-color: lavender;
+        }
+            .navbar{
+                width: 100%;
+                height: 100px;
+                background-color: lightblue;
+                                
+                display: flex;
+                flex-wrap: wrap;                
+                justify-content: center;                
+                align-content: center;                
+            }
+                .tab_item{
+                    width: 200px;
+                    height: 50px;
+                    background-color:snow;
+
+                    text-align: center;
+                    line-height: 50px;
+                    transform: .3s;
+                    font-size: 28px;
+                    font-weight: bold;
+                }
+                .tab_item:hover{
+                    background-color: darkseagreen;
+                }
+            .area_con{
+                width: 100%;
+                min-height: calc(100% - 100px);
+                background-color:paleturquoise;
+                
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-items: center;
+                padding: 20px 0;
+            }
+                .con_item{
+                    width: 400px;
+                    height: 500px;
+                    background-color: tan;
+                    
+                }
+                    .image{
+                        width: 100%;
+                        height: 50%;
+                    } 
+                        .image img{
+                            width: 100%;
+                            height: 100%;
+                            display: block;
+                        }
+                        .area_con .text{
+                            text-align: center;
+                        }
+    </style>
+</head>
+<body>
+    <div class="all">
+        <div class="navbar">
+            <div class="tab_item">
+                全台天氣預報</div>
+            </div>
+        <div class="area_con">
+            <!-- <div id="abt" class="con_item">
+                <div class="image">
+                    <img src="${item.img}" alt="">
+            </div>
+            <div class="text">
+                <h2>縣市: ${item.name}</h2>
+                <p>天氣: ${item.cityName}</p>
+                <p>最高溫: ${item.price}元</p>
+                <p>最低溫:</p>
+                <p>降雨率:</p>
+                <p>舒適度:</p>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+    //找圖片:下雨(降雨率>50%)、陰天(降雨率<50%)、晴天(降雨率=0%)
+        
+    fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-B5282D9D-8FDD-40E9-AD48-B1DF3270465D')
+        .then(function (response){
+            return response.json();
+        })
+        .then(function (weather) {
+            var locate = weather.records.location
+        
+            locate.forEach(element => {
+        var cityName = element.locationName                                     //縣市名
+        var wx = element.weatherElement[0].time[0].parameter.parameterName  //天氣
+        var PoP = element.weatherElement[1].time[0].parameter.parameterName //降雨率
+        var MinT = element.weatherElement[2].time[0].parameter.parameterName    //最低溫
+        var CI = element.weatherElement[3].time[0].parameter.parameterName  //舒適度
+        var MaxT = element.weatherElement[4].time[0].parameter.parameterName    //最高溫
+        console.log(PoP);
+
+        if(PoP == 0){
+            area_con.innerHTML += `<div class="con_item">
+                <div class="image">
+                    <img src="https://previews.123rf.com/images/yupiramos/yupiramos1607/yupiramos160716558/60271474-sun-and-cloud-icon-nature-illustration-vector.jpg" alt="">
+            </div>
+            <div class="text">
+                <h2>縣市: ${cityName}</h2>
+                <p>天氣: ${wx}</p>
+                <p>最高溫: 攝氏 ${MaxT}度</p>
+                <p>最低溫: 攝氏 ${MinT}度</p>
+                <p>降雨率: ${PoP}%</p>
+                <p>舒適度: ${CI}</p>
+            </div>`
+        }
+        else if(PoP >= 50){
+            area_con.innerHTML += `<div class="con_item">
+                <div class="image">
+                    <img src="https://thumbs.dreamstime.com/b/%E8%A2%AB%E9%9A%94%E7%BB%9D%E7%9A%84%E5%A4%9A%E9%9B%A8%E5%A4%A9%E6%B0%94%E8%B1%A1-117974986.jpg" alt="">
+            </div>
+            <div class="text">
+                <h2>縣市: ${cityName}</h2>
+                <p>天氣: ${wx}</p>
+                <p>最高溫: 攝氏 ${MaxT}度</p>
+                <p>最低溫: 攝氏 ${MinT}度</p>
+                <p>降雨率: ${PoP}%</p>
+                <p>舒適度: ${CI}</p>
+            </div>`
+        }
+        else{
+            area_con.innerHTML += `<div class="con_item">
+                <div class="image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOGsoQyM_AFgsMso7SRgEmqG0dFMfr7KYMUw&usqp=CAU" alt="">
+            </div>
+            <div class="text">
+                <h2>縣市: ${cityName}</h2>
+                <p>天氣: ${wx}</p>
+                <p>最高溫: 攝氏 ${MaxT}度</p>
+                <p>最低溫: 攝氏 ${MinT}度</p>
+                <p>降雨率: ${PoP}%</p>
+                <p>舒適度: ${CI}</p>
+            </div>`
+        }
+        });
+    });
+        var area_con =document.querySelector('.area_con')
+        
+        function showAll() {
+            element.forEach(item => {
+                area_con.innerHTML += `
+                <div class="con_item">
+                <div class="image">
+                    <img src="${item.img}" alt="">
+            </div>
+            <div class="text">
+                <h2>縣市: ${item.cityName}</h2>
+                <p>天氣: ${item.wx}</p>
+                <p>最高溫: ${item.MaxT}</p>
+                <p>最低溫: ${item.MinT}</p>
+                <p>降雨率: ${item.PoP}</p>
+                <p>舒適度: ${item.CI}</p>
+            </div>
+            `
+            });
+        };
+        
+    </script>
+    <!-- 晴天示意圖:'https://previews.123rf.com/images/yupiramos/yupiramos1607/yupiramos160716558/60271474-sun-and-cloud-icon-nature-illustration-vector.jpg' -->
+    <!-- 陰天示意圖:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOGsoQyM_AFgsMso7SRgEmqG0dFMfr7KYMUw&usqp=CAU' -->
+    <!-- 雨天示意圖:'https://thumbs.dreamstime.com/b/%E8%A2%AB%E9%9A%94%E7%BB%9D%E7%9A%84%E5%A4%9A%E9%9B%A8%E5%A4%A9%E6%B0%94%E8%B1%A1-117974986.jpg' -->
+</body>
+</html>
